@@ -1,0 +1,18 @@
+The aim of this project is to get to a point where I can calculate checksum of storage blocks.
+Steps
+1. A userspace server gets what to execute (checksum) and when (on block I/O)
+2. compile and prepare
+3. load the code
+4. get data periodically
+
+What is the difference between compiling with clang and llvm VS. the CMake HelloWorld.cpp program?
+
+As I understand we do not have to program in eBPF bytecode. There are plenty of higher level helper functions around.
+
+TODO:
+1. https://github.com/torvalds/linux/tree/master/samples/bpf - compile and load cpustat_* code using the bcc toolchain
+outside the kernel tree.
+
+2. Write your own code using llvm and clang toolchain
+
+Questions:
