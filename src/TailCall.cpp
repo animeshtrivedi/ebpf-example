@@ -8,6 +8,7 @@
 #include <string>
 
 #include <bcc/BPF.h>
+#include <sstream>
 
 
 const std::string BPF_PROGRAM = R"(
@@ -20,17 +21,31 @@ int tail_call(void *ctx) {
 
 int do_tail_call(void *ctx) {
     bpf_trace_printk("Original program\n");
-    prog_array.call(ctx, 1);
+    prog_array.call(ctx, 2);
     return 0;
 }
 )";
 
-int main() {
+int main(int argc, char**argv) {
     ebpf::BPF bpf;
-    auto init_res = bpf.init(BPF_PROGRAM);
-    if (init_res.code() != 0) {
-        std::cerr << init_res.msg() << std::endl;
-        return 1;
+    if(argc >= 2) {
+        std::cout << "Going to load the eBPF program from (please make sure that this is a valid path)" << argv[1]
+                  << std::endl;
+        std::ifstream t(argv[1]);
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        const std::string file_ebpf = buffer.str();
+        auto init_res = bpf.init(file_ebpf);
+        if (init_res.code() != 0) {
+            std::cerr << init_res.msg() << std::endl;
+            return 1;
+        }
+    } else {
+        auto init_res = bpf.init(BPF_PROGRAM);
+        if (init_res.code() != 0) {
+            std::cerr << init_res.msg() << std::endl;
+            return 1;
+        }
     }
 
     int fd;
@@ -42,7 +57,7 @@ int main() {
 
     ebpf::BPFProgTable prog_table = bpf.get_prog_table("prog_array");
     std::cout<<"The map capacity is " << prog_table.capacity() << std::endl;
-    auto update_res = prog_table.update_value(1, fd);
+    auto update_res = prog_table.update_value(2, fd);
     if(update_res.code() != 0){
         std::cerr << update_res.msg() << std::endl;
         return 1;
