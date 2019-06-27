@@ -26,6 +26,7 @@ int main() {
         return 1;
     }
 
+    // atr - what is this trace_pipe? what other options are there?
     std::ifstream pipe("/sys/kernel/debug/tracing/trace_pipe");
     std::string line;
     std::string clone_fnname = bpf.get_syscall_fnname("clone");

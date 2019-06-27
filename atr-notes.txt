@@ -16,3 +16,12 @@ outside the kernel tree.
 2. Write your own code using llvm and clang toolchain
 
 Questions:
+
+1. How do i hook into the block call?
+2. How do i access the content of a block call? 4kB or 512 byte section?
+3. How do i change the return type from a call which should return the content request?
+4. What application? The SQL filter thing is weak because it does operate on a block basis. Atomic KV increment?
+
+
+How to setup bbc (may be I will need nighly build)
+https://linoxide.com/linux-how-to/bcc-kernel-tracing-tools-linux-performance/
