@@ -13,7 +13,7 @@
 // R - raw string literal
 const std::string BPF_PROGRAM = R"(
 int on_sys_clone(void *ctx) {
-  bpf_trace_printk("Hello, World! Here I did a sys_clone call!\n");
+  bpf_trace_printk("Hello, World! Here I did a sys_clone call \n");
   return 0;
 }
 )";
@@ -27,6 +27,7 @@ int main() {
     }
 
     // atr - what is this trace_pipe? what other options are there?
+    // it is just a pipe from the kernel to userspace to show the debugging output, see the FAQ in the README.md
     std::ifstream pipe("/sys/kernel/debug/tracing/trace_pipe");
     std::string line;
     std::string clone_fnname = bpf.get_syscall_fnname("clone");
