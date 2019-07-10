@@ -117,6 +117,9 @@ int main(){
     printf("The fetched value is : %d \n", new_value);
     assert(value == new_value);
 
+#if 0
+    // from the man page: map_delete_elem() fails with the error EINVAL, since elements cannot be deleted.
+
     //lets delete the value now
     bzero(attr, sizeof(*attr));
     printf("attempting to delete key %d \n", key);
@@ -127,6 +130,7 @@ int main(){
         printf("Aborting\n");
         return ret;
     }
+#endif
     // with the hash I can use any key size, this below of 64 * 64 * 1024 works.
     //int ret = bpf_create_map(BPF_MAP_TYPE_HASH, 64, 64, 1024);
     //int _err = errno;
