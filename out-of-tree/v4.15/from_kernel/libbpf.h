@@ -3,7 +3,7 @@
 #ifndef __LIBBPF_H
 #define __LIBBPF_H
 
-#include <bpf/bpf.h>
+#include <bpf.h>
 
 struct bpf_insn;
 

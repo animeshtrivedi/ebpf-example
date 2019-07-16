@@ -9,6 +9,7 @@ INCX="-I/usr/include/ -I/usr/include/x86_64-linux-gnu/ -I/usr/src/linux-headers-
 #this works
 #clang -target bpf -nostdinc -I/usr/lib/clang/6.0/include/ -I /usr/include/ -I /usr/include/x86_64-linux-gnu/ -I /usr/src/linux-headers-4.15.0-1045-oem/include/ -I ./from_kernel/ -O2 -emit-llvm -c cpustat_kern.c -o - | llc -march=bpf -filetype=obj -o cpustat_kern.o
 set -x 
+echo "clang -target bpf -nostdinc $INCX $CFLAGS -emit-llvm -c cpustat_kern.c -o - | llc -march=bpf -filetype=obj -o cpustat_kern.o"
 clang -target bpf -nostdinc $INCX $CFLAGS -emit-llvm -c cpustat_kern.c -o - | llc -march=bpf -filetype=obj -o cpustat_kern.o
 file cpustat_kern.o 
 

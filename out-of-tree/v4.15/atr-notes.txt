@@ -1,0 +1,2 @@
+This work, but if I move the bpf_load.c to top level directory this fails
+gcc cpustat_user.c ./from_kernel/bpf_load.c ~/vu/github/libbpf/src/libbpf.a -I/home/atr/vu/github/libbpf/src/ -I./from_kernel/ -lelf -o cpustat

@@ -26,7 +26,10 @@
 #include <assert.h>
 #include "libbpf.h"
 #include "bpf_load.h"
-#include "perf-sys.h"
+//#include "perf-sys.h"
+
+#include <linux/perf_event.h>
+#include <linux/hw_breakpoint.h>
 
 #define DEBUGFS "/sys/kernel/debug/tracing/"
 
@@ -54,6 +57,17 @@ static int populate_prog_array(const char *event, int prog_fd)
 	}
 	return 0;
 }
+
+static long
+       perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
+                       int cpu, int group_fd, unsigned long flags)
+       {
+           int ret;
+
+           ret = syscall(__NR_perf_event_open, hw_event, pid, cpu,
+                          group_fd, flags);
+           return ret;
+       }
 
 static int load_and_attach(const char *event, struct bpf_insn *prog, int size)
 {
@@ -187,7 +201,7 @@ static int load_and_attach(const char *event, struct bpf_insn *prog, int size)
 	id = atoi(buf);
 	attr.config = id;
 
-	efd = sys_perf_event_open(&attr, -1/*pid*/, 0/*cpu*/, -1/*group_fd*/, 0);
+	efd = perf_event_open(&attr, -1/*pid*/, 0/*cpu*/, -1/*group_fd*/, 0);
 	if (efd < 0) {
 		printf("event %d fd %d err %s\n", id, efd, strerror(errno));
 		return -1;
