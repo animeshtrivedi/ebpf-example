@@ -17,7 +17,7 @@
 #include <sys/resource.h>
 #include <sys/wait.h>
 
-#include <bpf/bpf.h>
+#include <bpf.h>
 #include "bpf_load.h"
 
 #define MAX_CPU			8
@@ -26,8 +26,8 @@
 #define MAX_STARS		40
 
 #define CPUFREQ_MAX_SYSFS_PATH	"/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
-#define CPUFREQ_LOWEST_FREQ	"208000"
-#define CPUFREQ_HIGHEST_FREQ	"12000000"
+#define CPUFREQ_LOWEST_FREQ	"400000"
+#define CPUFREQ_HIGHEST_FREQ	"4600000"
 
 struct cpu_stat_data {
 	unsigned long cstate[MAX_CSTATE_ENTRIES];
@@ -192,6 +192,7 @@ int main(int argc, char **argv)
 	int ret;
 
 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+	printf("File to be loaded is : %s \n", filename);
 
 	if (load_bpf_file(filename)) {
 		printf("%s", bpf_log_buf);
