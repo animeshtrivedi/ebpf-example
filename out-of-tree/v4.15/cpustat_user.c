@@ -192,6 +192,7 @@ int main(int argc, char **argv)
 	int ret;
 
 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+	printf("File to be loaded is : %s \n", filename);
 
 	if (load_bpf_file(filename)) {
 		printf("%s", bpf_log_buf);
