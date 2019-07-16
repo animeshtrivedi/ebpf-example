@@ -53,24 +53,24 @@ static int cpu_opps[] = { 208000, 432000, 729000, 960000, 1200000 };
 
 struct bpf_map_def SEC("maps") my_map = {
 	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(u32),
-	.value_size = sizeof(u64),
+	.key_size = sizeof(__u32),
+	.value_size = sizeof(__u64),
 	.max_entries = MAX_CPU * MAP_OFF_NUM,
 };
 
 /* cstate_duration records duration time for every idle state per CPU */
 struct bpf_map_def SEC("maps") cstate_duration = {
 	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(u32),
-	.value_size = sizeof(u64),
+	.key_size = sizeof(__u32),
+	.value_size = sizeof(__u64),
 	.max_entries = MAX_CPU * MAX_CSTATE_ENTRIES,
 };
 
 /* pstate_duration records duration time for every operating point per CPU */
 struct bpf_map_def SEC("maps") pstate_duration = {
 	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(u32),
-	.value_size = sizeof(u64),
+	.key_size = sizeof(__u32),
+	.value_size = sizeof(__u64),
 	.max_entries = MAX_CPU * MAX_PSTATE_ENTRIES,
 };
 
@@ -82,17 +82,17 @@ struct bpf_map_def SEC("maps") pstate_duration = {
  * These two events have same format, so define one common structure.
  */
 struct cpu_args {
-	u64 pad;
-	u32 state;
-	u32 cpu_id;
+	__u64 pad;
+	__u32 state;
+	__u32 cpu_id;
 };
 
 /* calculate pstate index, returns MAX_PSTATE_ENTRIES for failure */
-static u32 find_cpu_pstate_idx(u32 frequency)
+static __u32 find_cpu_pstate_idx(__u32 frequency)
 {
-	u32 i;
+	__u32 i;
 
-	for (i = 0; i < sizeof(cpu_opps) / sizeof(u32); i++) {
+	for (i = 0; i < sizeof(cpu_opps) / sizeof(__u32); i++) {
 		if (frequency == cpu_opps[i])
 			return i;
 	}
@@ -103,9 +103,9 @@ static u32 find_cpu_pstate_idx(u32 frequency)
 SEC("tracepoint/power/cpu_idle")
 int bpf_prog1(struct cpu_args *ctx)
 {
-	u64 *cts, *pts, *cstate, *pstate, prev_state, cur_ts, delta;
-	u32 key, cpu, pstate_idx;
-	u64 *val;
+	__u64 *cts, *pts, *cstate, *pstate, prev_state, cur_ts, delta;
+	__u32 key, cpu, pstate_idx;
+	__u64 *val;
 
 	if (ctx->cpu_id > MAX_CPU)
 		return 0;
@@ -160,7 +160,7 @@ int bpf_prog1(struct cpu_args *ctx)
 	 *            ^                     ^
 	 *           pts                  cur_ts
 	 */
-	if (ctx->state != (u32)-1) {
+	if (ctx->state != (__u32)-1) {
 
 		/* record pstate after have first cpu_frequency event */
 		if (!*pts)
@@ -211,9 +211,9 @@ int bpf_prog1(struct cpu_args *ctx)
 SEC("tracepoint/power/cpu_frequency")
 int bpf_prog2(struct cpu_args *ctx)
 {
-	u64 *pts, *cstate, *pstate, prev_state, cur_ts, delta;
-	u32 key, cpu, pstate_idx;
-	u64 *val;
+	__u64 *pts, *cstate, *pstate, prev_state, cur_ts, delta;
+	__u32 key, cpu, pstate_idx;
+	__u64 *val;
 
 	cpu = ctx->cpu_id;
 
@@ -245,7 +245,7 @@ int bpf_prog2(struct cpu_args *ctx)
 	*pts = cur_ts;
 
 	/* When CPU is in idle, bail out to skip pstate statistics */
-	if (*cstate != (u32)(-1))
+	if (*cstate != (__u32)(-1))
 		return 0;
 
 	/*
@@ -278,4 +278,4 @@ int bpf_prog2(struct cpu_args *ctx)
 }
 
 char _license[] SEC("license") = "GPL";
-u32 _version SEC("version") = LINUX_VERSION_CODE;
+__u32 _version SEC("version") = LINUX_VERSION_CODE;
