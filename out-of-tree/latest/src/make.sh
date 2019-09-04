@@ -27,7 +27,7 @@ gcc "$USER".c ../common/bpf_load.c ~/vu/github/libbpf/src/libbpf.a -I/home/atr/v
 
 }
 
-targets=( cpustat tracex1 )
+targets=( cpustat tracex1 hellotrace )
 
 for t in "${targets[@]}" ; do
 	echo "making ...$t"
